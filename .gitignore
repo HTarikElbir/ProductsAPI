@@ -12,7 +12,25 @@
 /dataSources/
 /dataSources.local.xml
 
+# Rider / IntelliJ IDEA
 .idea/
-**/.idea/
-.idea/* 
-.idea.*
+*.sln.iml
+
+# Build
+bin/
+obj/
+out/
+
+# User-specific
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

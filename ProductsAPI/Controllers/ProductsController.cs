@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductsAPI.Models;
 
 namespace ProductsAPI.Controllers
@@ -7,39 +8,28 @@ namespace ProductsAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private static List<Product>? _products;
-
-        public ProductsController()
+        private readonly ProductsContext _context;
+        public ProductsController(ProductsContext context)
         {
-            _products =
-            [
-                new Product { ProductId = 1, ProductName = "Product 1", Price = 100, IsActive = true },
-                new Product { ProductId = 2, ProductName = "Product 2", Price = 200, IsActive = true },
-                new Product { ProductId = 3, ProductName = "Product 3", Price = 300, IsActive = true },
-                new Product { ProductId = 4, ProductName = "Product 4", Price = 400, IsActive = true },
-                new Product { ProductId = 5, ProductName = "Product 5", Price = 500, IsActive = true }
-            ];
+            _context = context;
         }
         // GET: api/Products
         [HttpGet]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-            if (_products == null)
-            {
-                return NotFound();
-            }
+            var products = await _context.Products.ToListAsync();
             
-            return Ok(_products);
+            return Ok(products);
         }
         
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int? id)
+        public  async Task<IActionResult> GetProduct(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var product = _products?.FirstOrDefault(p => p.ProductId == id);
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == id);
             if (product == null)
             {
                 return NotFound();

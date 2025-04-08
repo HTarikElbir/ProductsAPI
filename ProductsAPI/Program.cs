@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using ProductsAPI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +10,9 @@ builder.Services.AddSwaggerGen();
 
 // Adds support for controllers in the application.
 builder.Services.AddControllers();
+
+// Adds support for database operations.
+builder.Services.AddDbContext<ProductsContext>(x => x.UseSqlite("Data Source=products.db"));
 
 var app = builder.Build();
 

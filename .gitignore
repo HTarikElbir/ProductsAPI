@@ -13,3 +13,6 @@
 /dataSources.local.xml
 
 .idea/
+**/.idea/
+.idea/* 
+.idea.*

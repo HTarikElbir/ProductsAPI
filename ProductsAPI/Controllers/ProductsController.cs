@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProductsAPI.DTO;
 using ProductsAPI.Models;
 
 namespace ProductsAPI.Controllers
@@ -17,8 +18,12 @@ namespace ProductsAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _context.Products.ToListAsync();
-            
+            var products = await _context
+                                        .Products
+                                        .Where(p=>p.IsActive)
+                                        .Select(p => MapToDTO(p))
+                                        .ToListAsync();
+                
             return Ok(products);
         }
         
@@ -29,7 +34,11 @@ namespace ProductsAPI.Controllers
             {
                 return NotFound();
             }
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == id);
+            var product = await _context
+                .Products
+                .Where(p => p.ProductId == id)
+                .Select(p => MapToDTO(p) )
+                .FirstOrDefaultAsync();
             if (product == null)
             {
                 return NotFound();
@@ -102,6 +111,16 @@ namespace ProductsAPI.Controllers
             }
             
             return NoContent();
+        }
+
+        private static ProductDTO MapToDTO(Product product)
+        {
+            return new ProductDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Price = product.Price
+            };
         }
     }
 }

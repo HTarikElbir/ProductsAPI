@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductsAPI.DTO;
@@ -27,6 +29,7 @@ namespace ProductsAPI.Controllers
             return Ok(products);
         }
         
+        [Authorize]
         [HttpGet("{id}")]
         public  async Task<IActionResult> GetProduct(int? id)
         {
@@ -115,12 +118,15 @@ namespace ProductsAPI.Controllers
 
         private static ProductDTO MapToDTO(Product product)
         {
-            return new ProductDTO
+            var entity = new ProductDTO();
+            if (product != null)
             {
-                ProductId = product.ProductId,
-                ProductName = product.ProductName,
-                Price = product.Price
-            };
+                entity.ProductId = product.ProductId;
+                entity.ProductName = product.ProductName;
+                entity.Price = product.Price;
+            }
+
+            return entity;
         }
     }
 }
